@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#111315">
-    <meta name="description" content="Lista de compras simples, moderna e offline.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d0f10">
+    <meta name="description" content="Lista de compras com cálculo por peso, volume e unidade.">
     <title>🛒 Lista de Compras</title>
 
     <style>
@@ -16,17 +16,18 @@
 
         :root {
             --bg: #0d0f10;
-            --surface: #151819;
-            --surface-2: #1c2022;
-            --surface-3: #24292b;
+            --card: #151819;
+            --card-2: #1c2022;
+            --card-3: #24292b;
             --border: rgba(255,255,255,.08);
             --text: #f4f5f5;
             --muted: #92999d;
             --primary: #6ee7a0;
             --primary-dark: #35b86b;
             --danger: #ff6b6b;
-            --shadow: 0 15px 40px rgba(0,0,0,.25);
+            --warning: #f6c85f;
             --radius: 18px;
+            --shadow: 0 15px 40px rgba(0,0,0,.28);
         }
 
         html {
@@ -39,13 +40,22 @@
                 radial-gradient(circle at top right, rgba(110,231,160,.07), transparent 30%),
                 var(--bg);
             color: var(--text);
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-                         "Segoe UI", Roboto, Arial, sans-serif;
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
             line-height: 1.5;
         }
 
         button,
-        input {
+        input,
+        select {
             font: inherit;
         }
 
@@ -56,7 +66,7 @@
 
         .container {
             width: min(1100px, calc(100% - 28px));
-            margin: 0 auto;
+            margin: auto;
         }
 
         header {
@@ -75,27 +85,27 @@
             display: grid;
             place-items: center;
             flex-shrink: 0;
-            background: linear-gradient(145deg, var(--surface-3), var(--surface));
-            border: 1px solid var(--border);
             border-radius: 16px;
-            font-size: 25px;
+            background: linear-gradient(145deg, var(--card-3), var(--card));
+            border: 1px solid var(--border);
             box-shadow: var(--shadow);
+            font-size: 25px;
         }
 
         h1 {
             font-size: clamp(1.6rem, 5vw, 2.1rem);
-            letter-spacing: -.04em;
             line-height: 1.1;
+            letter-spacing: -.04em;
         }
 
         .subtitle {
             color: var(--muted);
-            font-size: .9rem;
+            font-size: .88rem;
             margin-top: 5px;
         }
 
         .card {
-            background: rgba(21,24,25,.92);
+            background: rgba(21,24,25,.94);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
@@ -107,13 +117,13 @@
 
         .section-title {
             font-size: .95rem;
-            font-weight: 700;
+            font-weight: 750;
             margin-bottom: 17px;
         }
 
         .form-grid {
             display: grid;
-            gap: 14px;
+            gap: 13px;
         }
 
         .field {
@@ -124,37 +134,45 @@
 
         .field label {
             color: #cdd1d2;
-            font-size: .8rem;
-            font-weight: 600;
+            font-size: .78rem;
+            font-weight: 650;
         }
 
-        .input-wrap {
-            position: relative;
-        }
-
-        input {
+        input,
+        select {
             width: 100%;
             height: 52px;
             padding: 0 14px;
             color: var(--text);
-            background: var(--surface-2);
+            background: var(--card-2);
             border: 1px solid var(--border);
             border-radius: 13px;
             outline: none;
             transition: .2s ease;
         }
 
-        input::placeholder {
-            color: #666d70;
+        select {
+            appearance: none;
+            cursor: pointer;
         }
 
-        input:focus {
+        select option {
+            background: #1c2022;
+            color: white;
+        }
+
+        input:focus,
+        select:focus {
             border-color: rgba(110,231,160,.65);
             box-shadow: 0 0 0 3px rgba(110,231,160,.08);
         }
 
-        .money-input {
-            padding-left: 43px;
+        input::placeholder {
+            color: #666d70;
+        }
+
+        .money-wrapper {
+            position: relative;
         }
 
         .currency {
@@ -163,27 +181,36 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--muted);
-            font-size: .85rem;
+            font-size: .84rem;
             pointer-events: none;
         }
 
+        .money-wrapper input {
+            padding-left: 43px;
+        }
+
+        .unit-help {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: .7rem;
+        }
+
         .add-btn {
-            min-height: 52px;
             width: 100%;
+            min-height: 52px;
             margin-top: 5px;
             border-radius: 13px;
             background: var(--primary);
             color: #092314;
             font-weight: 800;
-            transition: transform .15s ease, filter .15s ease;
+            transition: .15s ease;
         }
 
         .add-btn:hover {
             filter: brightness(1.08);
         }
 
-        .add-btn:active,
-        .action-btn:active {
+        .add-btn:active {
             transform: scale(.97);
         }
 
@@ -208,7 +235,6 @@
         .counter {
             color: var(--muted);
             font-size: .8rem;
-            white-space: nowrap;
         }
 
         .empty {
@@ -230,10 +256,6 @@
             margin-bottom: 5px;
         }
 
-        .table-container {
-            display: none;
-        }
-
         .products-mobile {
             padding: 12px;
             display: grid;
@@ -242,7 +264,7 @@
 
         .product-card {
             padding: 16px;
-            background: var(--surface-2);
+            background: var(--card-2);
             border: 1px solid var(--border);
             border-radius: 15px;
             animation: itemIn .3s ease both;
@@ -259,6 +281,7 @@
                 opacity: 0;
                 transform: translateY(8px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -273,15 +296,21 @@
         }
 
         .product-name {
-            font-weight: 750;
             font-size: .98rem;
+            font-weight: 750;
             word-break: break-word;
         }
 
-        .product-qty {
+        .product-quantity {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: .78rem;
+        }
+
+        .product-price-info {
             margin-top: 3px;
             color: var(--muted);
-            font-size: .8rem;
+            font-size: .72rem;
         }
 
         .delete-btn {
@@ -298,7 +327,7 @@
         }
 
         .delete-btn:hover {
-            background: rgba(255,107,107,.15);
+            background: rgba(255,107,107,.16);
         }
 
         .product-values {
@@ -313,17 +342,22 @@
         .value-label {
             display: block;
             color: var(--muted);
-            font-size: .7rem;
+            font-size: .69rem;
             margin-bottom: 2px;
         }
 
         .value {
             font-weight: 700;
-            font-size: .9rem;
+            font-size: .88rem;
         }
 
         .subtotal {
             color: var(--primary);
+            font-weight: 850;
+        }
+
+        .table-container {
+            display: none;
         }
 
         .summary {
@@ -340,17 +374,17 @@
 
         .total-label {
             color: var(--muted);
-            font-size: .72rem;
-            font-weight: 700;
+            font-size: .7rem;
+            font-weight: 750;
             letter-spacing: .08em;
         }
 
         .total-value {
             margin-top: 3px;
+            color: var(--primary);
             font-size: clamp(1.65rem, 7vw, 2.2rem);
             font-weight: 850;
             letter-spacing: -.04em;
-            color: var(--primary);
         }
 
         .item-total {
@@ -374,7 +408,7 @@
         }
 
         .copy-btn {
-            background: var(--surface-3);
+            background: var(--card-3);
             color: var(--text);
             border: 1px solid var(--border);
         }
@@ -402,14 +436,14 @@
         }
 
         .toast {
-            max-width: 420px;
+            max-width: 430px;
             padding: 12px 17px;
             background: #252a2c;
             border: 1px solid var(--border);
             border-radius: 12px;
             color: var(--text);
             box-shadow: 0 15px 35px rgba(0,0,0,.4);
-            font-size: .86rem;
+            font-size: .85rem;
             font-weight: 650;
             animation: toastIn .25s ease both;
         }
@@ -423,6 +457,7 @@
                 opacity: 0;
                 transform: translateY(15px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -434,6 +469,7 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+
             to {
                 opacity: 0;
                 transform: translateY(15px);
@@ -458,7 +494,7 @@
         .modal {
             width: min(420px, 100%);
             padding: 23px;
-            background: var(--surface);
+            background: var(--card);
             border: 1px solid var(--border);
             border-radius: 19px;
             box-shadow: 0 25px 70px rgba(0,0,0,.5);
@@ -470,6 +506,7 @@
                 opacity: 0;
                 transform: scale(.96) translateY(8px);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
@@ -500,29 +537,30 @@
         }
 
         .cancel-btn {
-            background: var(--surface-3);
+            background: var(--card-3);
             color: var(--text);
         }
 
         .confirm-btn {
             background: var(--danger);
-            color: #fff;
+            color: white;
         }
 
         footer {
             padding: 28px 0 35px;
             color: #5f6669;
             text-align: center;
-            font-size: .72rem;
+            font-size: .7rem;
         }
 
-        @media (min-width: 600px) {
+        /* DESKTOP */
+        @media (min-width: 700px) {
             .container {
                 width: min(1100px, calc(100% - 40px));
             }
 
             .form-grid {
-                grid-template-columns: 130px 1fr 180px auto;
+                grid-template-columns: 120px 1fr 120px 170px auto;
                 align-items: end;
             }
 
@@ -533,7 +571,7 @@
             }
         }
 
-        @media (min-width: 800px) {
+        @media (min-width: 850px) {
             header {
                 padding-top: 50px;
             }
@@ -558,21 +596,21 @@
 
             th,
             td {
-                padding: 15px 20px;
+                padding: 15px 18px;
                 text-align: left;
                 border-bottom: 1px solid var(--border);
             }
 
             th {
                 color: var(--muted);
-                font-size: .72rem;
+                font-size: .7rem;
                 text-transform: uppercase;
                 letter-spacing: .05em;
                 font-weight: 700;
             }
 
             td {
-                font-size: .88rem;
+                font-size: .85rem;
             }
 
             tbody tr {
@@ -595,6 +633,11 @@
             .table-subtotal {
                 color: var(--primary);
                 font-weight: 800;
+            }
+
+            .table-unit {
+                color: var(--muted);
+                font-size: .75rem;
             }
 
             .table-delete {
@@ -620,701 +663,1710 @@
 
 <body>
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">🛒</div>
-                <div>
-                    <h1>Lista de Compras</h1>
-                    <p class="subtitle">Organize suas compras e acompanhe o total em tempo real.</p>
-                </div>
-            </div>
-        </div>
-    </header>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">🛒</div>
 
-    <main class="container">
-
-        <section class="card form-card">
-            <div class="section-title">Adicionar produto</div>
-
-            <form id="productForm" autocomplete="off">
-                <div class="form-grid">
-
-                    <div class="field">
-                        <label for="quantity">Quantidade</label>
-                        <input
-                            id="quantity"
-                            type="text"
-                            inputmode="decimal"
-                            placeholder="1"
-                            value="1"
-                            aria-label="Quantidade"
-                        >
-                    </div>
-
-                    <div class="field">
-                        <label for="product">Produto</label>
-                        <input
-                            id="product"
-                            type="text"
-                            placeholder="Digite o nome do produto"
-                            maxlength="120"
-                            aria-label="Nome do produto"
-                        >
-                    </div>
-
-                    <div class="field">
-                        <label for="price">Preço</label>
-                        <div class="input-wrap">
-                            <span class="currency">R$</span>
-                            <input
-                                id="price"
-                                class="money-input"
-                                type="text"
-                                inputmode="decimal"
-                                placeholder="0,00"
-                                aria-label="Preço unitário"
-                            >
-                        </div>
-                    </div>
-
-                    <button class="add-btn" type="submit">
-                        ＋ Adicionar produto
-                    </button>
-
-                </div>
-            </form>
-        </section>
-
-        <section class="card list-card">
-
-            <div class="list-header">
-                <h2>Produtos</h2>
-                <span class="counter" id="headerCounter">0 itens</span>
-            </div>
-
-            <div id="emptyState" class="empty">
-                <div class="empty-icon">🛒</div>
-                <strong>Sua lista está vazia</strong>
-                <span>Adicione seu primeiro produto acima.</span>
-            </div>
-
-            <div id="mobileProducts" class="products-mobile"></div>
-
-            <div id="tableContainer" class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Qtd.</th>
-                            <th>Produto</th>
-                            <th>Preço Unit.</th>
-                            <th>Subtotal</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productsTable"></tbody>
-                </table>
-            </div>
-
-        </section>
-
-        <section class="card summary">
-
-            <div class="total-row">
-                <div>
-                    <div class="total-label">TOTAL DA COMPRA</div>
-                    <div class="total-value" id="totalValue">R$ 0,00</div>
-                </div>
-
-                <div class="item-total" id="itemTotal">
-                    0 itens
-                </div>
-            </div>
-
-            <div class="actions">
-                <button id="copyBtn" class="action-btn copy-btn" type="button" disabled>
-                    📋 Copiar lista
-                </button>
-
-                <button id="clearBtn" class="action-btn clear-btn" type="button" disabled>
-                    🗑️ Limpar lista
-                </button>
-            </div>
-
-        </section>
-
-    </main>
-
-    <footer>
-        Lista de Compras • Dados salvos automaticamente neste dispositivo
-    </footer>
-
-    <div id="toastContainer" class="toast-container"></div>
-
-    <div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
-        <div class="modal">
-            <h3>Limpar lista?</h3>
-            <p>Deseja realmente apagar todos os produtos?</p>
-
-            <div class="modal-actions">
-                <button id="cancelModal" class="modal-btn cancel-btn" type="button">
-                    Cancelar
-                </button>
-
-                <button id="confirmClear" class="modal-btn confirm-btn" type="button">
-                    Limpar lista
-                </button>
+            <div>
+                <h1>Lista de Compras</h1>
+                <p class="subtitle">
+                    Organize suas compras e acompanhe o total em tempo real.
+                </p>
             </div>
         </div>
     </div>
+</header>
 
-    <script>
-        "use strict";
+<main class="container">
 
-        const STORAGE_KEY = "listaCompras_v1";
+    <!-- FORMULÁRIO -->
+    <section class="card form-card">
 
-        let produtos = [];
-        let toastTimer = null;
+        <div class="section-title">
+            Adicionar produto
+        </div>
 
-        const productForm = document.getElementById("productForm");
-        const quantityInput = document.getElementById("quantity");
-        const productInput = document.getElementById("product");
-        const priceInput = document.getElementById("price");
+        <form id="productForm" autocomplete="off">
 
-        const emptyState = document.getElementById("emptyState");
-        const mobileProducts = document.getElementById("mobileProducts");
-        const productsTable = document.getElementById("productsTable");
+            <div class="form-grid">
 
-        const totalValue = document.getElementById("totalValue");
-        const itemTotal = document.getElementById("itemTotal");
-        const headerCounter = document.getElementById("headerCounter");
+                <!-- QUANTIDADE -->
+                <div class="field">
+                    <label for="quantity">Quantidade</label>
 
-        const copyBtn = document.getElementById("copyBtn");
-        const clearBtn = document.getElementById("clearBtn");
+                    <input
+                        id="quantity"
+                        type="text"
+                        inputmode="decimal"
+                        placeholder="1"
+                        value="1"
+                        aria-label="Quantidade"
+                    >
+                </div>
 
-        const toastContainer = document.getElementById("toastContainer");
+                <!-- UNIDADE -->
+                <div class="field">
+                    <label for="unit">Unidade</label>
 
-        const modalOverlay = document.getElementById("modalOverlay");
-        const cancelModal = document.getElementById("cancelModal");
-        const confirmClear = document.getElementById("confirmClear");
+                    <select id="unit" aria-label="Unidade">
+                        <option value="un">Unidade (un)</option>
+                        <option value="kg">Quilograma (kg)</option>
+                        <option value="g">Grama (g)</option>
+                        <option value="L">Litro (L)</option>
+                        <option value="ml">Mililitro (ml)</option>
+                    </select>
+                </div>
+
+                <!-- PRODUTO -->
+                <div class="field">
+                    <label for="product">Produto</label>
+
+                    <input
+                        id="product"
+                        type="text"
+                        placeholder="Ex.: Arroz"
+                        maxlength="120"
+                        aria-label="Nome do produto"
+                    >
+                </div>
+
+                <!-- PREÇO -->
+                <div class="field">
+                    <label for="price">
+                        <span id="priceLabel">Preço por unidade</span>
+                    </label>
+
+                    <div class="money-wrapper">
+                        <span class="currency">R$</span>
+
+                        <input
+                            id="price"
+                            type="text"
+                            inputmode="decimal"
+                            placeholder="0,00"
+                            aria-label="Preço"
+                        >
+                    </div>
+
+                    <div class="unit-help" id="unitHelp">
+                        Informe o preço de cada unidade.
+                    </div>
+                </div>
+
+                <!-- BOTÃO -->
+                <button class="add-btn" type="submit">
+                    ＋ Adicionar produto
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
 
 
-        function formatarMoeda(valor) {
-            return new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL"
-            }).format(Number(valor) || 0);
+    <!-- LISTA -->
+    <section class="card list-card">
+
+        <div class="list-header">
+            <h2>Produtos</h2>
+            <span class="counter" id="headerCounter">
+                0 itens
+            </span>
+        </div>
+
+        <div id="emptyState" class="empty">
+            <div class="empty-icon">🛒</div>
+
+            <strong>Sua lista está vazia</strong>
+
+            <span>
+                Adicione seu primeiro produto acima.
+            </span>
+        </div>
+
+
+        <!-- MOBILE -->
+        <div id="mobileProducts" class="products-mobile"></div>
+
+
+        <!-- DESKTOP -->
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Qtd.</th>
+                        <th>Unid.</th>
+                        <th>Produto</th>
+                        <th>Preço</th>
+                        <th>Subtotal</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+
+                <tbody id="productsTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- TOTAL -->
+    <section class="card summary">
+
+        <div class="total-row">
+
+            <div>
+                <div class="total-label">
+                    TOTAL DA COMPRA
+                </div>
+
+                <div class="total-value" id="totalValue">
+                    R$ 0,00
+                </div>
+            </div>
+
+            <div class="item-total" id="itemTotal">
+                0 itens
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                id="copyBtn"
+                class="action-btn copy-btn"
+                type="button"
+                disabled
+            >
+                📋 Copiar lista
+            </button>
+
+            <button
+                id="clearBtn"
+                class="action-btn clear-btn"
+                type="button"
+                disabled
+            >
+                🗑️ Limpar lista
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    Lista de Compras • Dados salvos automaticamente neste dispositivo
+</footer>
+
+
+<!-- TOAST -->
+<div id="toastContainer" class="toast-container"></div>
+
+
+<!-- MODAL -->
+<div
+    id="modalOverlay"
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+>
+
+    <div class="modal">
+
+        <h3>
+            Limpar lista?
+        </h3>
+
+        <p>
+            Deseja realmente apagar todos os produtos?
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                id="cancelModal"
+                class="modal-btn cancel-btn"
+                type="button"
+            >
+                Cancelar
+            </button>
+
+            <button
+                id="confirmClear"
+                class="modal-btn confirm-btn"
+                type="button"
+            >
+                Limpar lista
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+"use strict";
+
+/* =========================================================
+   CONFIGURAÇÕES
+========================================================= */
+
+const STORAGE_KEY = "listaCompras_v2";
+
+let produtos = [];
+let toastTimer = null;
+
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const productForm = document.getElementById("productForm");
+
+const quantityInput = document.getElementById("quantity");
+const unitInput = document.getElementById("unit");
+const productInput = document.getElementById("product");
+const priceInput = document.getElementById("price");
+
+const priceLabel = document.getElementById("priceLabel");
+const unitHelp = document.getElementById("unitHelp");
+
+const emptyState = document.getElementById("emptyState");
+
+const mobileProducts =
+    document.getElementById("mobileProducts");
+
+const productsTable =
+    document.getElementById("productsTable");
+
+const totalValue =
+    document.getElementById("totalValue");
+
+const itemTotal =
+    document.getElementById("itemTotal");
+
+const headerCounter =
+    document.getElementById("headerCounter");
+
+const copyBtn =
+    document.getElementById("copyBtn");
+
+const clearBtn =
+    document.getElementById("clearBtn");
+
+const toastContainer =
+    document.getElementById("toastContainer");
+
+const modalOverlay =
+    document.getElementById("modalOverlay");
+
+const cancelModal =
+    document.getElementById("cancelModal");
+
+const confirmClear =
+    document.getElementById("confirmClear");
+
+
+/* =========================================================
+   MOEDA
+========================================================= */
+
+function formatarMoeda(valor) {
+
+    return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    }).format(Number(valor) || 0);
+
+}
+
+
+/* =========================================================
+   NÚMERO
+========================================================= */
+
+function normalizarNumero(valor) {
+
+    if (typeof valor === "number") {
+        return valor;
+    }
+
+    let texto = String(valor || "")
+        .trim()
+        .replace(/\s/g, "");
+
+    if (texto.includes(",")) {
+
+        texto = texto
+            .replace(/\./g, "")
+            .replace(",", ".");
+
+    }
+
+    texto = texto.replace(/[^\d.-]/g, "");
+
+    return Number(texto);
+
+}
+
+
+/* =========================================================
+   FORMATA QUANTIDADE
+========================================================= */
+
+function formatarQuantidade(valor) {
+
+    return new Intl.NumberFormat("pt-BR", {
+        maximumFractionDigits: 3
+    }).format(valor);
+
+}
+
+
+/* =========================================================
+   INFORMAÇÕES DA UNIDADE
+========================================================= */
+
+function obterInfoUnidade(unidade) {
+
+    const unidades = {
+
+        un: {
+            nome: "unidade",
+            abreviacao: "un",
+            tipo: "unidade",
+            fator: 1
+        },
+
+        kg: {
+            nome: "quilograma",
+            abreviacao: "kg",
+            tipo: "peso",
+            fator: 1
+        },
+
+        g: {
+            nome: "grama",
+            abreviacao: "g",
+            tipo: "peso",
+            fator: 0.001
+        },
+
+        L: {
+            nome: "litro",
+            abreviacao: "L",
+            tipo: "volume",
+            fator: 1
+        },
+
+        ml: {
+            nome: "mililitro",
+            abreviacao: "ml",
+            tipo: "volume",
+            fator: 0.001
         }
 
+    };
 
-        function normalizarNumero(valor) {
-            if (typeof valor === "number") {
-                return valor;
-            }
+    return unidades[unidade] || unidades.un;
 
-            let texto = String(valor || "").trim();
+}
 
-            texto = texto.replace(/\s/g, "");
 
-            if (texto.includes(",")) {
-                texto = texto.replace(/\./g, "").replace(",", ".");
-            }
+/* =========================================================
+   ATUALIZA TEXTO DO PREÇO
+========================================================= */
 
-            texto = texto.replace(/[^\d.-]/g, "");
+function atualizarInformacoesUnidade() {
 
-            return Number(texto);
+    const unidade = unitInput.value;
+
+    if (unidade === "kg") {
+
+        priceLabel.textContent = "Preço por kg";
+
+        unitHelp.textContent =
+            "Ex.: R$ 8,50 por kg.";
+
+    }
+
+    else if (unidade === "g") {
+
+        priceLabel.textContent = "Preço por kg";
+
+        unitHelp.textContent =
+            "Informe o preço equivalente a 1 kg.";
+
+    }
+
+    else if (unidade === "L") {
+
+        priceLabel.textContent = "Preço por litro";
+
+        unitHelp.textContent =
+            "Ex.: R$ 6,90 por litro.";
+
+    }
+
+    else if (unidade === "ml") {
+
+        priceLabel.textContent = "Preço por litro";
+
+        unitHelp.textContent =
+            "Informe o preço equivalente a 1 litro.";
+
+    }
+
+    else {
+
+        priceLabel.textContent = "Preço por unidade";
+
+        unitHelp.textContent =
+            "Informe o preço de cada unidade.";
+
+    }
+
+}
+
+
+/* =========================================================
+   CÁLCULO DO SUBTOTAL
+========================================================= */
+
+function calcularSubtotal(quantidade, preco, unidade) {
+
+    const info = obterInfoUnidade(unidade);
+
+    /*
+       Para kg:
+       2 kg × R$ 8,50/kg = R$ 17,00
+
+       Para g:
+       500 g = 0,5 kg
+       0,5 × R$ 8,50/kg = R$ 4,25
+
+       Para L:
+       2 L × R$ 6,90/L = R$ 13,80
+
+       Para ml:
+       500 ml = 0,5 L
+       0,5 × R$ 6,90/L = R$ 3,45
+
+       Para unidade:
+       3 × R$ 5,00 = R$ 15,00
+    */
+
+    const quantidadeBase =
+        quantidade * info.fator;
+
+    return quantidadeBase * preco;
+
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+function calcularTotal() {
+
+    return produtos.reduce(
+        (total, produto) => total + produto.subtotal,
+        0
+    );
+
+}
+
+
+/* =========================================================
+   QUANTIDADE TOTAL
+========================================================= */
+
+function calcularQuantidadeItens() {
+
+    return produtos.reduce(
+        (total, produto) => total + produto.quantidade,
+        0
+    );
+
+}
+
+
+/* =========================================================
+   ID
+========================================================= */
+
+function gerarId() {
+
+    return (
+        Date.now().toString(36) +
+        Math.random().toString(36).slice(2)
+    );
+
+}
+
+
+/* =========================================================
+   SALVAR
+========================================================= */
+
+function salvarLista() {
+
+    try {
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(produtos)
+        );
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao salvar lista:",
+            erro
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CARREGAR
+========================================================= */
+
+function carregarLista() {
+
+    try {
+
+        const dados =
+            localStorage.getItem(STORAGE_KEY);
+
+        if (!dados) {
+
+            produtos = [];
+            return;
+
         }
 
+        const lista = JSON.parse(dados);
 
-        function formatarQuantidade(valor) {
-            return new Intl.NumberFormat("pt-BR", {
-                maximumFractionDigits: 3
-            }).format(valor);
+        if (!Array.isArray(lista)) {
+
+            produtos = [];
+            return;
+
         }
 
+        produtos = lista
+            .filter(item =>
+                item &&
+                typeof item.nome === "string" &&
+                Number(item.quantidade) > 0 &&
+                Number(item.preco) > 0
+            )
+            .map(item => {
 
-        function calcularTotal() {
-            return produtos.reduce((total, produto) => {
-                return total + (produto.quantidade * produto.preco);
-            }, 0);
-        }
+                const quantidade =
+                    Number(item.quantidade);
 
+                const preco =
+                    Number(item.preco);
 
-        function calcularQuantidadeItens() {
-            return produtos.reduce((total, produto) => {
-                return total + produto.quantidade;
-            }, 0);
-        }
+                const unidade =
+                    item.unidade || "un";
 
+                return {
 
-        function salvarLista() {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos));
-            } catch (erro) {
-                console.error("Não foi possível salvar a lista:", erro);
-            }
-        }
+                    id: item.id || gerarId(),
 
+                    nome: item.nome.trim(),
 
-        function carregarLista() {
-            try {
-                const dados = localStorage.getItem(STORAGE_KEY);
+                    quantidade,
 
-                if (!dados) {
-                    produtos = [];
-                    return;
-                }
+                    unidade,
 
-                const lista = JSON.parse(dados);
+                    preco,
 
-                if (!Array.isArray(lista)) {
-                    produtos = [];
-                    return;
-                }
+                    subtotal:
+                        calcularSubtotal(
+                            quantidade,
+                            preco,
+                            unidade
+                        )
 
-                produtos = lista
-                    .filter(item =>
-                        item &&
-                        typeof item.nome === "string" &&
-                        Number(item.quantidade) > 0 &&
-                        Number(item.preco) > 0
-                    )
-                    .map(item => {
-                        const quantidade = Number(item.quantidade);
-                        const preco = Number(item.preco);
+                };
 
-                        return {
-                            id: item.id || gerarId(),
-                            nome: item.nome.trim(),
-                            quantidade: quantidade,
-                            preco: preco,
-                            subtotal: quantidade * preco
-                        };
-                    });
-
-            } catch (erro) {
-                console.error("Não foi possível carregar a lista:", erro);
-                produtos = [];
-            }
-        }
-
-
-        function gerarId() {
-            return Date.now().toString(36) + Math.random().toString(36).slice(2);
-        }
-
-
-        function renderizarLista() {
-            const total = calcularTotal();
-            const quantidadeItens = calcularQuantidadeItens();
-            const possuiProdutos = produtos.length > 0;
-
-            totalValue.textContent = formatarMoeda(total);
-
-            const textoItens = quantidadeItens === 1
-                ? "1 item"
-                : `${formatarQuantidade(quantidadeItens)} itens`;
-
-            itemTotal.textContent = textoItens;
-            headerCounter.textContent = textoItens;
-
-            emptyState.style.display = possuiProdutos ? "none" : "block";
-
-            copyBtn.disabled = !possuiProdutos;
-            clearBtn.disabled = !possuiProdutos;
-
-            renderizarMobile();
-            renderizarTabela();
-        }
-
-
-        function renderizarMobile() {
-            mobileProducts.innerHTML = "";
-
-            produtos.forEach((produto) => {
-                const card = document.createElement("article");
-                card.className = "product-card";
-                card.dataset.id = produto.id;
-
-                const main = document.createElement("div");
-                main.className = "product-main";
-
-                const info = document.createElement("div");
-
-                const nome = document.createElement("div");
-                nome.className = "product-name";
-                nome.textContent = produto.nome;
-
-                const quantidade = document.createElement("div");
-                quantidade.className = "product-qty";
-                quantidade.textContent = `${formatarQuantidade(produto.quantidade)}x`;
-
-                info.appendChild(nome);
-                info.appendChild(quantidade);
-
-                const deleteButton = criarBotaoExcluir(produto.id);
-                main.appendChild(info);
-                main.appendChild(deleteButton);
-
-                const values = document.createElement("div");
-                values.className = "product-values";
-
-                values.appendChild(criarValor("Preço unitário", formatarMoeda(produto.preco)));
-                values.appendChild(criarValor("Subtotal", formatarMoeda(produto.subtotal), true));
-
-                card.appendChild(main);
-                card.appendChild(values);
-
-                mobileProducts.appendChild(card);
             });
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar lista:",
+            erro
+        );
+
+        produtos = [];
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDERIZAÇÃO
+========================================================= */
+
+function renderizarLista() {
+
+    const total = calcularTotal();
+
+    const quantidadeItens =
+        calcularQuantidadeItens();
+
+    const possuiProdutos =
+        produtos.length > 0;
+
+    totalValue.textContent =
+        formatarMoeda(total);
+
+    const textoItens =
+        quantidadeItens === 1
+            ? "1 item"
+            : `${formatarQuantidade(quantidadeItens)} itens`;
+
+    itemTotal.textContent = textoItens;
+
+    headerCounter.textContent = textoItens;
+
+    emptyState.style.display =
+        possuiProdutos
+            ? "none"
+            : "block";
+
+    copyBtn.disabled =
+        !possuiProdutos;
+
+    clearBtn.disabled =
+        !possuiProdutos;
+
+    renderizarMobile();
+
+    renderizarTabela();
+
+}
+
+
+/* =========================================================
+   RENDERIZAÇÃO MOBILE
+========================================================= */
+
+function renderizarMobile() {
+
+    mobileProducts.innerHTML = "";
+
+    produtos.forEach(produto => {
+
+        const card =
+            document.createElement("article");
+
+        card.className =
+            "product-card";
+
+        card.dataset.id =
+            produto.id;
+
+
+        const main =
+            document.createElement("div");
+
+        main.className =
+            "product-main";
+
+
+        const info =
+            document.createElement("div");
+
+
+        const nome =
+            document.createElement("div");
+
+        nome.className =
+            "product-name";
+
+        nome.textContent =
+            produto.nome;
+
+
+        const quantidade =
+            document.createElement("div");
+
+        quantidade.className =
+            "product-quantity";
+
+        quantidade.textContent =
+            `${formatarQuantidade(produto.quantidade)} ${produto.unidade}`;
+
+
+        const precoInfo =
+            document.createElement("div");
+
+        precoInfo.className =
+            "product-price-info";
+
+        const unidade = produto.unidade;
+
+        if (unidade === "g") {
+
+            precoInfo.textContent =
+                `${formatarMoeda(produto.preco)} / kg`;
+
+        }
+
+        else if (unidade === "ml") {
+
+            precoInfo.textContent =
+                `${formatarMoeda(produto.preco)} / L`;
+
+        }
+
+        else if (unidade === "kg") {
+
+            precoInfo.textContent =
+                `${formatarMoeda(produto.preco)} / kg`;
+
+        }
+
+        else if (unidade === "L") {
+
+            precoInfo.textContent =
+                `${formatarMoeda(produto.preco)} / L`;
+
+        }
+
+        else {
+
+            precoInfo.textContent =
+                `${formatarMoeda(produto.preco)} / un`;
+
         }
 
 
-        function criarValor(labelTexto, valorTexto, positivo = false) {
-            const wrapper = document.createElement("div");
+        info.appendChild(nome);
 
-            const label = document.createElement("span");
-            label.className = "value-label";
-            label.textContent = labelTexto;
+        info.appendChild(quantidade);
 
-            const value = document.createElement("span");
-            value.className = positivo ? "value subtotal" : "value";
-            value.textContent = valorTexto;
+        info.appendChild(precoInfo);
 
-            wrapper.appendChild(label);
-            wrapper.appendChild(value);
 
-            return wrapper;
+        const deleteButton =
+            criarBotaoExcluir(produto.id);
+
+
+        main.appendChild(info);
+
+        main.appendChild(deleteButton);
+
+
+        const values =
+            document.createElement("div");
+
+        values.className =
+            "product-values";
+
+
+        values.appendChild(
+            criarValor(
+                "Preço de referência",
+                formatarMoeda(produto.preco)
+            )
+        );
+
+
+        values.appendChild(
+            criarValor(
+                "Subtotal",
+                formatarMoeda(produto.subtotal),
+                true
+            )
+        );
+
+
+        card.appendChild(main);
+
+        card.appendChild(values);
+
+        mobileProducts.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   VALOR
+========================================================= */
+
+function criarValor(
+    labelTexto,
+    valorTexto,
+    positivo = false
+) {
+
+    const wrapper =
+        document.createElement("div");
+
+    const label =
+        document.createElement("span");
+
+    label.className =
+        "value-label";
+
+    label.textContent =
+        labelTexto;
+
+
+    const value =
+        document.createElement("span");
+
+    value.className =
+        positivo
+            ? "value subtotal"
+            : "value";
+
+    value.textContent =
+        valorTexto;
+
+
+    wrapper.appendChild(label);
+
+    wrapper.appendChild(value);
+
+    return wrapper;
+
+}
+
+
+/* =========================================================
+   BOTÃO EXCLUIR
+========================================================= */
+
+function criarBotaoExcluir(id) {
+
+    const button =
+        document.createElement("button");
+
+    button.type = "button";
+
+    button.className =
+        "delete-btn";
+
+    button.title =
+        "Excluir produto";
+
+    button.setAttribute(
+        "aria-label",
+        "Excluir produto"
+    );
+
+    button.textContent = "🗑️";
+
+
+    button.addEventListener(
+        "click",
+        () => removerProduto(id)
+    );
+
+
+    return button;
+
+}
+
+
+/* =========================================================
+   TABELA DESKTOP
+========================================================= */
+
+function renderizarTabela() {
+
+    productsTable.innerHTML = "";
+
+    produtos.forEach(produto => {
+
+        const row =
+            document.createElement("tr");
+
+        row.dataset.id =
+            produto.id;
+
+
+        const qtd =
+            document.createElement("td");
+
+        qtd.textContent =
+            formatarQuantidade(
+                produto.quantidade
+            );
+
+
+        const unidade =
+            document.createElement("td");
+
+        unidade.className =
+            "table-unit";
+
+        unidade.textContent =
+            produto.unidade;
+
+
+        const nome =
+            document.createElement("td");
+
+        nome.className =
+            "table-product";
+
+        nome.textContent =
+            produto.nome;
+
+
+        const preco =
+            document.createElement("td");
+
+        preco.textContent =
+            formatarMoeda(
+                produto.preco
+            );
+
+
+        const subtotal =
+            document.createElement("td");
+
+        subtotal.className =
+            "table-subtotal";
+
+        subtotal.textContent =
+            formatarMoeda(
+                produto.subtotal
+            );
+
+
+        const action =
+            document.createElement("td");
+
+        const deleteButton =
+            criarBotaoExcluir(produto.id);
+
+        deleteButton.classList.add(
+            "table-delete"
+        );
+
+        action.appendChild(deleteButton);
+
+
+        row.appendChild(qtd);
+
+        row.appendChild(unidade);
+
+        row.appendChild(nome);
+
+        row.appendChild(preco);
+
+        row.appendChild(subtotal);
+
+        row.appendChild(action);
+
+
+        productsTable.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================================================
+   ADICIONAR PRODUTO
+========================================================= */
+
+function adicionarProduto() {
+
+    const quantidade =
+        normalizarNumero(
+            quantityInput.value
+        );
+
+    const unidade =
+        unitInput.value;
+
+    const nome =
+        productInput.value.trim();
+
+    const preco =
+        normalizarNumero(
+            priceInput.value
+        );
+
+
+    if (!quantidade || quantidade <= 0) {
+
+        mostrarToast(
+            "⚠️ Informe uma quantidade válida."
+        );
+
+        quantityInput.focus();
+
+        return;
+
+    }
+
+
+    if (!nome) {
+
+        mostrarToast(
+            "⚠️ Informe o nome do produto."
+        );
+
+        productInput.focus();
+
+        return;
+
+    }
+
+
+    if (!preco || preco <= 0) {
+
+        mostrarToast(
+            "⚠️ Informe um preço maior que zero."
+        );
+
+        priceInput.focus();
+
+        return;
+
+    }
+
+
+    const subtotal =
+        calcularSubtotal(
+            quantidade,
+            preco,
+            unidade
+        );
+
+
+    const produto = {
+
+        id: gerarId(),
+
+        nome,
+
+        quantidade,
+
+        unidade,
+
+        preco,
+
+        subtotal
+
+    };
+
+
+    produtos.push(produto);
+
+    salvarLista();
+
+    renderizarLista();
+
+
+    quantityInput.value = "1";
+
+    productInput.value = "";
+
+    priceInput.value = "";
+
+
+    productInput.focus();
+
+
+    mostrarToast(
+        "✅ Produto adicionado!"
+    );
+
+}
+
+
+/* =========================================================
+   REMOVER PRODUTO
+========================================================= */
+
+function removerProduto(id) {
+
+    const mobileCard =
+        mobileProducts.querySelector(
+            `[data-id="${id}"]`
+        );
+
+    const tableRow =
+        productsTable.querySelector(
+            `[data-id="${id}"]`
+        );
+
+
+    if (mobileCard) {
+
+        mobileCard.classList.add(
+            "removing"
+        );
+
+    }
+
+
+    if (tableRow) {
+
+        tableRow.style.opacity = "0";
+
+        tableRow.style.transform =
+            "translateX(20px)";
+
+        tableRow.style.transition =
+            ".25s ease";
+
+    }
+
+
+    setTimeout(() => {
+
+        produtos =
+            produtos.filter(
+                produto =>
+                    produto.id !== id
+            );
+
+
+        salvarLista();
+
+        renderizarLista();
+
+        mostrarToast(
+            "🗑️ Produto removido."
+        );
+
+    }, 230);
+
+}
+
+
+/* =========================================================
+   LIMPAR LISTA
+========================================================= */
+
+function abrirModal() {
+
+    modalOverlay.classList.add(
+        "active"
+    );
+
+}
+
+
+function fecharModal() {
+
+    modalOverlay.classList.remove(
+        "active"
+    );
+
+}
+
+
+function limparLista() {
+
+    produtos = [];
+
+    try {
+
+        localStorage.removeItem(
+            STORAGE_KEY
+        );
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao limpar armazenamento:",
+            erro
+        );
+
+    }
+
+
+    renderizarLista();
+
+    fecharModal();
+
+    mostrarToast(
+        "🧹 Lista limpa com sucesso!"
+    );
+
+}
+
+
+/* =========================================================
+   COPIAR LISTA
+========================================================= */
+
+function gerarTextoLista() {
+
+    let texto =
+        "🛒 LISTA DE COMPRAS\n\n";
+
+
+    produtos.forEach(produto => {
+
+        texto +=
+            `${formatarQuantidade(produto.quantidade)}${produto.unidade} ${produto.nome}\n`;
+
+
+        if (
+            produto.unidade === "kg" ||
+            produto.unidade === "g"
+        ) {
+
+            texto +=
+                `Preço: ${formatarMoeda(produto.preco)}/kg\n`;
+
+        }
+
+        else if (
+            produto.unidade === "L" ||
+            produto.unidade === "ml"
+        ) {
+
+            texto +=
+                `Preço: ${formatarMoeda(produto.preco)}/L\n`;
+
+        }
+
+        else {
+
+            texto +=
+                `Preço: ${formatarMoeda(produto.preco)}/un\n`;
+
         }
 
 
-        function criarBotaoExcluir(id) {
-            const button = document.createElement("button");
+        texto +=
+            `Subtotal: ${formatarMoeda(produto.subtotal)}\n\n`;
 
-            button.type = "button";
-            button.className = "delete-btn";
-            button.title = "Excluir produto";
-            button.setAttribute("aria-label", "Excluir produto");
-            button.textContent = "🗑️";
+    });
 
-            button.addEventListener("click", () => {
-                removerProduto(id);
-            });
 
-            return button;
+    texto +=
+        "────────────────────\n\n";
+
+
+    texto +=
+        `📦 Itens: ${formatarQuantidade(calcularQuantidadeItens())}\n`;
+
+
+    texto +=
+        `💰 TOTAL: ${formatarMoeda(calcularTotal())}`;
+
+
+    return texto;
+
+}
+
+
+/* =========================================================
+   COPIAR
+========================================================= */
+
+async function copiarLista() {
+
+    if (!produtos.length) {
+
+        mostrarToast(
+            "⚠️ Sua lista está vazia."
+        );
+
+        return;
+
+    }
+
+
+    const texto =
+        gerarTextoLista();
+
+
+    try {
+
+        if (
+            navigator.clipboard &&
+            window.isSecureContext
+        ) {
+
+            await navigator.clipboard.writeText(
+                texto
+            );
+
+        }
+
+        else {
+
+            copiarComMetodoAlternativo(
+                texto
+            );
+
         }
 
 
-        function renderizarTabela() {
-            productsTable.innerHTML = "";
+        copyBtn.textContent =
+            "✅ Lista copiada!";
 
-            produtos.forEach((produto) => {
-                const row = document.createElement("tr");
-                row.dataset.id = produto.id;
-
-                const qtd = document.createElement("td");
-                qtd.textContent = formatarQuantidade(produto.quantidade);
-
-                const nome = document.createElement("td");
-                nome.className = "table-product";
-                nome.textContent = produto.nome;
-
-                const preco = document.createElement("td");
-                preco.textContent = formatarMoeda(produto.preco);
-
-                const subtotal = document.createElement("td");
-                subtotal.className = "table-subtotal";
-                subtotal.textContent = formatarMoeda(produto.subtotal);
-
-                const action = document.createElement("td");
-                const deleteButton = criarBotaoExcluir(produto.id);
-                deleteButton.classList.add("table-delete");
-                action.appendChild(deleteButton);
-
-                row.appendChild(qtd);
-                row.appendChild(nome);
-                row.appendChild(preco);
-                row.appendChild(subtotal);
-                row.appendChild(action);
-
-                productsTable.appendChild(row);
-            });
-        }
+        copyBtn.disabled = true;
 
 
-        function adicionarProduto() {
-            const quantidade = normalizarNumero(quantityInput.value);
-            const nome = productInput.value.trim();
-            const preco = normalizarNumero(priceInput.value);
-
-            if (!quantidade || quantidade <= 0) {
-                mostrarToast("⚠️ Informe uma quantidade válida.");
-                quantityInput.focus();
-                return;
-            }
-
-            if (!nome) {
-                mostrarToast("⚠️ Informe o nome do produto.");
-                productInput.focus();
-                return;
-            }
-
-            if (!preco || preco <= 0) {
-                mostrarToast("⚠️ Informe um preço maior que zero.");
-                priceInput.focus();
-                return;
-            }
-
-            const subtotal = quantidade * preco;
-
-            const produto = {
-                id: gerarId(),
-                nome,
-                quantidade,
-                preco,
-                subtotal
-            };
-
-            produtos.push(produto);
-
-            salvarLista();
-            renderizarLista();
-
-            productInput.value = "";
-            priceInput.value = "";
-            quantityInput.value = "1";
-
-            productInput.focus();
-
-            mostrarToast("✅ Produto adicionado!");
-        }
+        mostrarToast(
+            "✅ Lista copiada!"
+        );
 
 
-        function removerProduto(id) {
-            const mobileCard = mobileProducts.querySelector(`[data-id="${id}"]`);
-            const tableRow = productsTable.querySelector(`[data-id="${id}"]`);
+        setTimeout(() => {
 
-            if (mobileCard) {
-                mobileCard.classList.add("removing");
-            }
+            copyBtn.textContent =
+                "📋 Copiar lista";
 
-            if (tableRow) {
-                tableRow.style.opacity = "0";
-                tableRow.style.transform = "translateX(20px)";
-                tableRow.style.transition = ".25s ease";
-            }
+            copyBtn.disabled =
+                produtos.length === 0;
+
+        }, 2000);
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao copiar:",
+            erro
+        );
+
+        mostrarToast(
+            "❌ Não foi possível copiar."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MÉTODO ALTERNATIVO DE CÓPIA
+========================================================= */
+
+function copiarComMetodoAlternativo(texto) {
+
+    const textarea =
+        document.createElement("textarea");
+
+    textarea.value = texto;
+
+    textarea.style.position =
+        "fixed";
+
+    textarea.style.left =
+        "-9999px";
+
+    textarea.style.top =
+        "0";
+
+
+    document.body.appendChild(
+        textarea
+    );
+
+    textarea.focus();
+
+    textarea.select();
+
+
+    const sucesso =
+        document.execCommand("copy");
+
+
+    textarea.remove();
+
+
+    if (!sucesso) {
+
+        throw new Error(
+            "Falha ao copiar."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function mostrarToast(mensagem) {
+
+    if (toastTimer) {
+
+        clearTimeout(toastTimer);
+
+    }
+
+
+    toastContainer.innerHTML = "";
+
+
+    const toast =
+        document.createElement("div");
+
+    toast.className =
+        "toast";
+
+    toast.textContent =
+        mensagem;
+
+
+    toastContainer.appendChild(
+        toast
+    );
+
+
+    toastTimer =
+        setTimeout(() => {
+
+            toast.classList.add(
+                "hide"
+            );
+
 
             setTimeout(() => {
-                produtos = produtos.filter(produto => produto.id !== id);
 
-                salvarLista();
-                renderizarLista();
+                toast.remove();
 
-                mostrarToast("🗑️ Produto removido.");
-            }, 230);
+            }, 250);
+
+        }, 2200);
+
+}
+
+
+/* =========================================================
+   FORMATAÇÃO DO PREÇO
+========================================================= */
+
+priceInput.addEventListener(
+    "input",
+    function() {
+
+        let valor =
+            priceInput.value;
+
+        valor =
+            valor.replace(
+                /[^\d,.]/g,
+                ""
+            );
+
+
+        const partes =
+            valor.split(/[,.]/);
+
+
+        if (partes.length > 2) {
+
+            valor =
+                partes.shift() +
+                "," +
+                partes.join("");
+
         }
 
 
-        function abrirModal() {
-            modalOverlay.classList.add("active");
-        }
+        priceInput.value =
+            valor;
+
+    }
+);
 
 
-        function fecharModal() {
-            modalOverlay.classList.remove("active");
-        }
+/* =========================================================
+   FORMATAÇÃO DA QUANTIDADE
+========================================================= */
+
+quantityInput.addEventListener(
+    "input",
+    function() {
+
+        let valor =
+            quantityInput.value;
 
 
-        function limparLista() {
-            produtos = [];
-
-            try {
-                localStorage.removeItem(STORAGE_KEY);
-            } catch (erro) {
-                console.error("Erro ao limpar localStorage:", erro);
-            }
-
-            renderizarLista();
-            fecharModal();
-
-            mostrarToast("🧹 Lista limpa com sucesso!");
-        }
+        valor =
+            valor.replace(
+                /[^\d,.]/g,
+                ""
+            );
 
 
-        function gerarTextoLista() {
-            let texto = "🛒 LISTA DE COMPRAS\n\n";
-
-            produtos.forEach(produto => {
-                texto += `${formatarQuantidade(produto.quantidade)}x ${produto.nome}\n`;
-                texto += `Preço: ${formatarMoeda(produto.preco)}\n`;
-                texto += `Subtotal: ${formatarMoeda(produto.subtotal)}\n\n`;
-            });
-
-            texto += "────────────────────\n\n";
-
-            texto += `📦 Itens: ${formatarQuantidade(calcularQuantidadeItens())}\n`;
-            texto += `💰 TOTAL: ${formatarMoeda(calcularTotal())}`;
-
-            return texto;
-        }
+        const separadores =
+            valor.match(
+                /[,.]/g
+            );
 
 
-        async function copiarLista() {
-            if (!produtos.length) {
-                mostrarToast("⚠️ Sua lista está vazia.");
-                return;
-            }
+        if (
+            separadores &&
+            separadores.length > 1
+        ) {
 
-            const texto = gerarTextoLista();
-
-            try {
-                if (navigator.clipboard && window.isSecureContext) {
-                    await navigator.clipboard.writeText(texto);
-                } else {
-                    copiarComMetodoAlternativo(texto);
-                }
-
-                const textoOriginal = "📋 Copiar lista";
-
-                copyBtn.textContent = "✅ Lista copiada!";
-                copyBtn.disabled = true;
-
-                mostrarToast("✅ Lista copiada para a área de transferência!");
-
-                setTimeout(() => {
-                    copyBtn.textContent = textoOriginal;
-                    copyBtn.disabled = produtos.length === 0;
-                }, 2000);
-
-            } catch (erro) {
-                console.error("Erro ao copiar:", erro);
-                mostrarToast("❌ Não foi possível copiar a lista.");
-            }
-        }
-
-
-        function copiarComMetodoAlternativo(texto) {
-            const textarea = document.createElement("textarea");
-
-            textarea.value = texto;
-            textarea.style.position = "fixed";
-            textarea.style.left = "-9999px";
-            textarea.style.top = "0";
-
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
-
-            const sucesso = document.execCommand("copy");
-
-            textarea.remove();
-
-            if (!sucesso) {
-                throw new Error("Falha ao copiar.");
-            }
-        }
-
-
-        function mostrarToast(mensagem) {
-            if (toastTimer) {
-                clearTimeout(toastTimer);
-            }
-
-            toastContainer.innerHTML = "";
-
-            const toast = document.createElement("div");
-            toast.className = "toast";
-            toast.textContent = mensagem;
-
-            toastContainer.appendChild(toast);
-
-            toastTimer = setTimeout(() => {
-                toast.classList.add("hide");
-
-                setTimeout(() => {
-                    toast.remove();
-                }, 250);
-            }, 2200);
-        }
-
-
-        function formatarCampoPreco() {
-            let valor = priceInput.value;
-
-            valor = valor.replace(/[^\d,\.]/g, "");
-
-            const partes = valor.split(/[,.]/);
-
-            if (partes.length > 2) {
-                valor = partes.shift() + "," + partes.join("");
-            }
-
-            priceInput.value = valor;
-        }
-
-
-        function normalizarCampoQuantidade() {
-            let valor = quantityInput.value;
-
-            valor = valor.replace(/[^\d,\.]/g, "");
-
-            const separadores = valor.match(/[,.]/g);
-
-            if (separadores && separadores.length > 1) {
-                const ultimo = Math.max(
+            const ultimo =
+                Math.max(
                     valor.lastIndexOf(","),
                     valor.lastIndexOf(".")
                 );
 
-                const parteInteira = valor.slice(0, ultimo).replace(/[,.]/g, "");
-                const parteDecimal = valor.slice(ultimo + 1).replace(/[,.]/g, "");
 
-                valor = parteInteira + "," + parteDecimal;
-            }
+            const inteiro =
+                valor
+                    .slice(0, ultimo)
+                    .replace(/[,.]/g, "");
 
-            quantityInput.value = valor;
+
+            const decimal =
+                valor
+                    .slice(ultimo + 1)
+                    .replace(/[,.]/g, "");
+
+
+            valor =
+                inteiro +
+                "," +
+                decimal;
+
         }
 
 
-        productForm.addEventListener("submit", function(event) {
-            event.preventDefault();
-            adicionarProduto();
-        });
+        quantityInput.value =
+            valor;
+
+    }
+);
 
 
-        priceInput.addEventListener("input", formatarCampoPreco);
+/* =========================================================
+   ALTERAÇÃO DA UNIDADE
+========================================================= */
 
-        quantityInput.addEventListener("input", normalizarCampoQuantidade);
-
-
-        clearBtn.addEventListener("click", abrirModal);
-
-        cancelModal.addEventListener("click", fecharModal);
-
-        confirmClear.addEventListener("click", limparLista);
+unitInput.addEventListener(
+    "change",
+    atualizarInformacoesUnidade
+);
 
 
-        modalOverlay.addEventListener("click", function(event) {
-            if (event.target === modalOverlay) {
-                fecharModal();
-            }
-        });
+/* =========================================================
+   EVENTOS
+========================================================= */
+
+productForm.addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+        adicionarProduto();
+
+    }
+);
 
 
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "Escape" && modalOverlay.classList.contains("active")) {
-                fecharModal();
-            }
-        });
+copyBtn.addEventListener(
+    "click",
+    copiarLista
+);
 
 
-        copyBtn.addEventListener("click", copiarLista);
+clearBtn.addEventListener(
+    "click",
+    abrirModal
+);
 
 
-        carregarLista();
-        renderizarLista();
+cancelModal.addEventListener(
+    "click",
+    fecharModal
+);
 
-    </script>
+
+confirmClear.addEventListener(
+    "click",
+    limparLista
+);
+
+
+modalOverlay.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target ===
+            modalOverlay
+        ) {
+
+            fecharModal();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape" &&
+            modalOverlay.classList.contains(
+                "active"
+            )
+        ) {
+
+            fecharModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+carregarLista();
+
+atualizarInformacoesUnidade();
+
+renderizarLista();
+
+</script>
 
 </body>
 </html>
